@@ -9,7 +9,7 @@ import sys
 from selenium.common.exceptions import InvalidArgumentException,NoSuchElementException
 
 #Coloque o diretorio de sua imagem
-midia = '/home/diogo/Documentos/projetos/script-envio-mensagem-wpp-ss-dpag/images/pjf.png'
+midia = '/home/diogo/Documentos/projetos/script-envio-mensagem-wpp-ss-dpag/images/video.mp4'
 
 #Lista de Contatos
 contatos = ['5532988141424']
@@ -21,7 +21,7 @@ grupos = ['Teste', '2teste']
 planilha = './planilha/contatos.xlsx'
 
 #Cole sua mensagem aqui
-mensagem="""Cole Aqui"""
+mensagem="""Cole aqui sua mensagem"""
 
 opcao = input('Selecione como deseja enviar sua mensagem\n------------------------------------\nCom base em planilhas:\n 1. Enviar mensagem e imagem\n 2. Enviar mensagem\nEnviar para grupos:\n 3. Enviar mensagem e imagem\n 4. Enviar mensagem\nEnviar para lista de contatos no sistema\n 5. Enviar mensagem e imagem \n 6. Enviar mensagem\n \n')
 
@@ -44,6 +44,13 @@ def abrirGrupo(grupo):
         campoPesquisa.click()
         campoPesquisa.send_keys(grupo)
         campoPesquisa.send_keys(Keys.ENTER)
+
+def ajustarQuebraDeLinhas(mensagem,campo):
+    arrLinhas = mensagem.split('\n')
+    for linha in arrLinhas:
+        campo.send_keys(linha)
+        campo.send_keys(Keys.SHIFT + Keys.ENTER)
+        time.sleep(1)
 
 def enviarMensagemImagemPlanilha(mensagem,planilha,midia):
     dados=[]
@@ -118,17 +125,17 @@ def enviarMensagemImagemGrupo(mensagem,grupos,midia):
     except:
         print('Erro ao logar, tente novamente!')
         return
-    time.sleep(10)
+    time.sleep(5)
     for grupo in grupos:
         try:
             abrirGrupo(grupo)
+            campoMensagem = navegador.find_element(By.XPATH,'//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]/p')
+            time.sleep(2)
+            campoMensagem.click()
+            ajustarQuebraDeLinhas(mensagem,campoMensagem)
             navegador.find_element(By.XPATH,'//*[@id="main"]/footer/div[1]/div/span[2]/div/div[1]/div[2]/div/div/div/span').click()
             time.sleep(2)
             navegador.find_element(By.XPATH,'//*[@id="main"]/footer/div[1]/div/span[2]/div/div[1]/div[2]/div/span/div/ul/div/div[2]/li/div/input').send_keys(midia)
-            time.sleep(2)
-            campoMensagem = navegador.find_element(By.XPATH,'//*[@id="app"]/div/div[2]/div[2]/div[2]/span/div/div/div/div[2]/div/div[1]/div[3]/div/div/div[2]/div[1]/div[1]/p')
-            campoMensagem.click()
-            campoMensagem.send_keys(mensagem)
             time.sleep(2)
             navegador.find_element(By.XPATH,'//*[@id="app"]/div/div[2]/div[2]/div[2]/span/div/div/div/div[2]/div/div[2]/div[2]/div/div').click()
             time.sleep(10)
@@ -159,10 +166,10 @@ def enviarMensagemGrupo(mensagem,grupos):
                 abrirGrupo(grupo)
                 campoMensagem = navegador.find_element(By.XPATH,'//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]/p')
                 campoMensagem.click()
-                campoMensagem.send_keys(mensagem)
+                ajustarQuebraDeLinhas(mensagem,campoMensagem)
                 campoMensagem.send_keys(Keys.ENTER)
                 time.sleep(5)
-                print(f'Enviado para telefone {grupo}')
+                print(f'Enviado para grupo {grupo}')
             except NoSuchElementException:
                 erros.append(grupo)
                 print('ERRO!!! O navegador não conseguiu fazer o envio!')
@@ -223,10 +230,9 @@ def enviarMensagem(mensagem,contatos):
     else:
         for erro in erros:
             print(f'Erro ao enviar para {erro}')
-
     
 if opcao == '1':
-    enviarMensagemImagemPlanilha(mensagem,midia,planilha)
+    enviarMensagemImagemPlanilha(mensagem,planilha,midia)
 elif opcao =='2':
     enviarMensagemPlanilha(mensagem,planilha)
 elif opcao =='3':
