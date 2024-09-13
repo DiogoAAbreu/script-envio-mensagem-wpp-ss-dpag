@@ -6,7 +6,7 @@ import time
 import urllib
 import pandas as pd
 import sys
-from selenium.common.exceptions import InvalidArgumentException,NoSuchElementException
+from selenium.common.exceptions import InvalidArgumentException,NoSuchElementException, NoSuchWindowException
 
 #Coloque o diretorio de sua imagem
 midia = '/home/diogo/Documentos/projetos/script-envio-mensagem-wpp-ss-dpag/images/video.mp4'
@@ -77,6 +77,9 @@ def enviarMensagemImagemPlanilha(mensagem,planilha,midia):
         except NoSuchElementException:
             erros.append(contato)
             print('ERRO!!! O navegador não conseguiu fazer o envio!')
+        except NoSuchWindowException:
+            print('A janela do navegador foi fechada inesperadamente.')
+            return
         except InvalidArgumentException:
             print('ERRO!!! Verifique o endereço de onde se econtra a imagem e/ou planilha')
             return
@@ -107,6 +110,9 @@ def enviarMensagemPlanilha(mensagem,planilha):
         except NoSuchElementException:
             erros.append(contato)
             print('ERRO!!! O navegador não conseguiu fazer o envio!')
+        except NoSuchWindowException:
+            print('A janela do navegador foi fechada inesperadamente.')
+            return
         except InvalidArgumentException:
             erros.append(contato)
             print('ERRO!!! Verifique o endereço de onde se econtra a imagem e/ou planilha')
@@ -143,6 +149,9 @@ def enviarMensagemImagemGrupo(mensagem,grupos,midia):
         except NoSuchElementException:
             erros.append(grupo)
             print('ERRO!!! O navegador não conseguiu fazer o envio!')
+        except NoSuchWindowException:
+            print('A janela do navegador foi fechada inesperadamente.')
+            return
         except InvalidArgumentException:
             print('ERRO!!! Verifique o endereço de onde se econtra a imagem e/ou planilha')
             return
@@ -173,6 +182,9 @@ def enviarMensagemGrupo(mensagem,grupos):
             except NoSuchElementException:
                 erros.append(grupo)
                 print('ERRO!!! O navegador não conseguiu fazer o envio!')
+            except NoSuchWindowException:
+                print('A janela do navegador foi fechada inesperadamente.')
+                return
         if(len(erros)==0):
             print("Todas mensagens enviadas com sucesso.")
         else:
@@ -200,6 +212,9 @@ def enviarMensagemImagem(mensagem,contatos,midia):
         except NoSuchElementException:
             erros.append(contato)
             print('ERRO!!! O navegador não conseguiu fazer o envio!')
+        except NoSuchWindowException:
+            print('A janela do navegador foi fechada inesperadamente.')
+            return
         except InvalidArgumentException:
             print('ERRO!!! Verifique o endereço de onde se econtra a imagem e/ou planilha')
             return
@@ -223,8 +238,11 @@ def enviarMensagem(mensagem,contatos):
             time.sleep(5)
             print(f'Enviado para telefone {contato}')
         except NoSuchElementException:
-                erros.append(contato)
-                print('ERRO!!! O navegador não conseguiu fazer o envio!')
+            erros.append(contato)
+            print('ERRO!!! O navegador não conseguiu fazer o envio!')
+        except NoSuchWindowException:
+            print('A janela do navegador foi fechada inesperadamente.')
+            return
     if(len(erros)==0):
         print("Todas mensagens enviadas com sucesso.")
     else:
